@@ -1,0 +1,22 @@
+# .NET 构建产物
+#
+# 用不带路径前缀的 bin/ obj/，而不是 app/bin/ —— test/markdown.test 自己有
+# 一份 bin/obj（里面还有编译出来的 exe 和 dll），只写 app/ 那两条会漏掉它。
+bin/
+obj/
+
+# dist/：不入库，但**会**进 npm 包 —— package.json 的 files 显式列了它。
+# npm/pnpm 的规则是 files 优先于 .gitignore，所以忽略它不影响打包。
+# 代价：克隆仓库拿不到预编译的 exe，得自己跑 build.ps1 -Pack，或在 Release 里下 zip。
+dist/
+
+# 打包产物（release.ps1 生成）
+*.tgz
+*.tgz.sha256
+*-install.zip
+*.zip
+*.zip.sha256
+
+# 诊断/临时
+metrics.log
+*.log

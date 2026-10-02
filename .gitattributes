@@ -1,0 +1,13 @@
+# 统一换行，避免 Windows / macOS / Linux 来回改同一批文件。
+# 仓库里一律存 LF；.ps1 / .cmd 是 Windows 脚本，检出成 CRLF 更稳妥。
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# 二进制，别让 git 去猜
+*.png binary
+*.ico binary
+*.webp binary
+*.exe binary
+*.dll binary

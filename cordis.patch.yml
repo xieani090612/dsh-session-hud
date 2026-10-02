@@ -1,0 +1,28 @@
+# ============================================================================
+# dsh-session-hud —— DSH bundle patch
+# ============================================================================
+# 插件挂载声明：DSH 启动时按 bundle 层栈叠加各插件 patch，本文件把 HUD 宿主插件
+# 插入 profile 的配置树。package.json 的 dsh.bundle.patch 指向本文件。
+#
+# 安装（三选一）：
+#   dsh plugin --profile desktop add file:<...>\dsh-session-hud-1.0.0.tgz   # 装打包好的包
+#   dsh plugin --profile desktop add <包目录>                                # 装目录
+#   dsh plugin --profile desktop add link:<仓库目录>                          # 本地开发
+#
+# 装完如果是换了一种依赖形式（link → tgz 等），插件模块路径变了，
+# 需要重启一次 DSH 才会加载新包。
+# ============================================================================
+
+- insert:
+    - id: dsh-session-hud
+      name: dsh-session-hud
+      config:
+        # DSH 启动时自动拉起 HUD 窗口；窗口自身有单实例互斥体，重复拉起会立刻退出。
+        autoLaunch: true
+        # 状态文件的落盘轮询间隔（毫秒）。
+        flushIntervalMs: 300
+        # 心跳间隔：无条件定期重写快照。不能只在有会话运行时写，
+        # 否则 DSH 空闲时窗口会误判成「宿主已退出」。
+        heartbeatMs: 2000
+        # 每个会话保留的最近工具调用条数。
+        maxTimeline: 12

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>DshSessionHud.Tests</RootNamespace>
+    <AssemblyName>MarkdownParserTests</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 直接链接被测源码，而不是引用 WinUI 程序集：
+         MarkdownParser.cs 刻意不依赖任何 WinUI 类型，所以能在纯 net8.0 下编译并跑。 -->
+    <Compile Include="..\..\app\MarkdownParser.cs" Link="MarkdownParser.cs" />
+  </ItemGroup>
+
+</Project>

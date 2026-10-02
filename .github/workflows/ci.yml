@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# 三套离线测试都不需要 DSH，也不开窗口，所以 CI 上跑得动。
+jobs:
+  test:
+    name: 离线测试 + 打包契约
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # run-all.ps1 就是贡献者本地跑的那条命令，CI 不另开一套。
+      - name: 跑全部测试
+        shell: pwsh
+        run: .\test\run-all.ps1
+
+  build-window:
+    name: 构建窗口（WinUI 3）
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # 这一步同时验证「没有 Visual Studio 也能构建」这个关键结论：
+      # GitHub 的 windows runner 上没有 VS，构建能过就说明 EnableMsixTooling=true
+      # 那套纯 SDK 工具链确实成立。
+      - name: dotnet build
+        run: dotnet build app/DshSessionHud.csproj -c Release -v minimal
+
+  pack-check:
+    name: 打包冒烟（不含 dist）
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # CI 没有预编译的 dist（167MB，走 Release 附件），所以这里只验证
+      # package.json 的 files / exports / dsh.* 声明本身是自洽的、能打出包。
+      # tests/package.test.mjs 已经在 test job 里跑过，这里再跑一次是因为
+      # 这个 job 刻意**不构建**，用来证明打包声明不依赖构建产物。
+      - name: 打包契约测试
+        run: node test/package.test.mjs
+
+      - name: npm pack（确认能产出 tarball）
+        run: npm pack --dry-run

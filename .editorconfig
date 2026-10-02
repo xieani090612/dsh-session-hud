@@ -1,0 +1,31 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# .NET / XAML 源码用 4 空格（和既有文件一致）
+[*.{cs,xaml,csproj,props,targets}]
+indent_size = 4
+
+# PowerShell 用 4 空格
+[*.ps1]
+indent_size = 4
+
+# Windows 侧的脚本保持 CRLF，避免 PowerShell 5.1 解析异常
+[*.{ps1,cmd,bat}]
+end_of_line = crlf
+
+# 构建产物、截图、设计稿不参与格式约束
+[*.{png,ico,webp,gif}]
+insert_final_newline = false
+
+[*.md]
+trim_trailing_whitespace = false
+
+[{package.json,*.yml,*.yaml}]
+indent_size = 2

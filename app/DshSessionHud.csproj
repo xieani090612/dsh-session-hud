@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <RootNamespace>DshSessionHud</RootNamespace>
+    <AssemblyName>DshSessionHud</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- 应用图标：嵌进 exe 的资源里（资源管理器、Alt+Tab、任务栏都会用它）。
+         生成方式见 assets/make-icon.py，源图是 assets/icon-source.webp。 -->
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <Platforms>x64</Platforms>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <UseWinUI>true</UseWinUI>
+    <!-- 必须为 true，即使我们不做 MSIX 打包。
+         这个开关同时决定了「用哪套 PRI 工具链」：
+           true  → 用 WindowsAppSDK 自带的独立 MSIX 工具（Microsoft.Build.Msix.dll，
+                   随 NuGet 包发布，无需 Visual Studio）；
+           false → 回落到 MrtCore.PriGen.targets，它依赖 Visual Studio 才有的
+                   Microsoft.Build.Packaging.Pri.Tasks.dll，在纯 .NET SDK 环境下必定失败。
+         打包本身由下面的 WindowsPackageType=None 关掉。 -->
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <EnableCoreMrtTooling>false</EnableCoreMrtTooling>
+
+    <!-- 非打包（unpackaged）运行：不依赖 MSIX，也不需要预装 Windows App Runtime。
+         配合 WindowsAppSDKSelfContained，运行时 DLL 直接落在输出目录里，
+         所以插件把这个 exe 拷到哪台同架构机器都能跑。 -->
+    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <SelfContained>true</SelfContained>
+    <PublishTrimmed>false</PublishTrimmed>
+
+    <!-- 自己写入口点：需要单实例互斥体 + 命令行参数，且要在创建窗口之前完成。 -->
+    <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <AssemblyTitle>DSH 会话 HUD</AssemblyTitle>
+    <Product>DSH Session HUD</Product>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.7.260224002" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.9169" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 同时把 ico 落到输出目录：窗口启动时会用 AppWindow.SetIcon 再显式设一次，
+         覆盖「非打包 WinUI 应用任务栏图标可能回落到默认图标」的情况。 -->
+    <Content Include="app.ico" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

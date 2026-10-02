@@ -1,0 +1,49 @@
+{
+  "name": "dsh-session-hud",
+  "version": "1.1.0",
+  "description": "DSH 会话 HUD：把运行中会话的当前工作与批准提示实时推送到一个独立悬浮窗（WinUI 3，可自由缩放移动、跟随系统明暗、随窗口大小自适应、列表/格子双视图），并在 DSH 侧边栏提供打开按钮",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "hud",
+    "winui3",
+    "session",
+    "approval",
+    "overlay"
+  ],
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xieani090612/dsh-session-hud.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xieani090612/dsh-session-hud/issues"
+  },
+  "homepage": "https://github.com/xieani090612/dsh-session-hud#readme",
+  "files": [
+    "lib",
+    "dist",
+    "docs",
+    "cordis.patch.yml",
+    "README.md",
+    "PROVENANCE.md",
+    "CHANGELOG.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": []
+    }
+  },
+  "license": "MIT"
+}
