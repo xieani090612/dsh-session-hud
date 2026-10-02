@@ -114,16 +114,33 @@ DSH 的 webServer 有信任栅栏：非回环 Host、未认证请求一律拒绝
 
 ### 桌面版（图形界面）
 
-1. 拿到包：下载 Release 里的 `dsh-session-hud-<版本>.tgz`，或者克隆仓库后自己打一个
-   （见[打包与发布](#打包与发布)）；
-2. 打开 DSH 的**插件管理器**，添加一个包，填**这个 tgz 的绝对路径**（前面加 `file:` 更明确）：
+1. **拿到包**：从 [Releases](https://github.com/xieani090612/dsh-session-hud/releases)
+   下载 `dsh-session-hud-<版本>-install.zip`（约 65 MB）。
+   也可以克隆仓库后自己打一个，见[打包与发布](#打包与发布)。
+2. **解压到一个固定位置**。装好之后这个文件夹要一直留着 —— 插件是按路径链接进来的，
+   挪走或删掉就失效了。
+3. 在解压出来的文件夹里运行：
 
-   ```
-   file:C:\下载\dsh-session-hud-1.1.0.tgz
+   ```powershell
+   .\install.ps1
    ```
 
-3. **重启 DSH**。插件管理器换了一种依赖形式之后，插件模块路径变了，
-   必须重启才会加载新包（管理器会明确提示 `restart-required`）。
+   它会确认 `dist\DshSessionHud.exe` 在、往 profile 里声明依赖与 bundle、跑一次依赖安装，
+   并在改动之前把 profile 的 `package.json` 备份成 `package.json.bak`。
+   详细中文说明见压缩包里的 `INSTALL.txt`。
+
+4. **重启 DSH**。插件模块路径变了之后必须重启才会加载新包（管理器会提示 `restart-required`）。
+
+不想跑脚本的话，就打开 DSH 的**插件管理器**添加一个包，
+填**解压出来的那个文件夹的绝对路径**（前面加 `link:`）：
+
+```
+link:C:\你解压到的地方\dsh-session-hud-1.1.0
+```
+
+> `release.ps1` 另外还会产出 `dsh-session-hud-<版本>.tgz` —— 那个是给
+> 「插件管理器 / pnpm 直接装包」用的（依赖写 `file:<tgz 路径>`），不是给手工解压用的。
+> 两种形式的区别见[打包与发布](#打包与发布)。
 
 > 装好之后你会同时得到：随 DSH 启动自动打开的悬浮窗、侧边栏底部的打开按钮、以及 `/hud` 命令。
 
